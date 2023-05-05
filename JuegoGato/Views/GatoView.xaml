@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewModels="clr-namespace:JuegoGato.ViewModels"
+             x:DataType="viewModels:CatGameViewModel"
+             xmlns:models="clr-namespace:JuegoGato.Models"
+             x:Class="JuegoGato.Views.GatoView"
+             Title="GatoView" Background="#BDFDA0">
+    <VerticalStackLayout VerticalOptions="CenterAndExpand" Padding="10" Spacing="40" Background="#BDFDA0">
+        <Label Text="TIC TAC TOE" FontFamily="ka1" HorizontalTextAlignment="Center" TextColor="#F24BB8" FontSize="45" VerticalTextAlignment="Start"></Label>
+        <Grid ColumnDefinitions="5*,5*" ColumnSpacing="10">
+            <Frame Grid.Column="0">
+                <Frame.Background>
+                    <LinearGradientBrush EndPoint="0,1">
+                        <GradientStop Color="#EDFB86"
+                          Offset="0.1" />
+                        <GradientStop Color="#9AFEB2"
+                          Offset="1.0" />
+                    </LinearGradientBrush>
+                </Frame.Background>
+                <Label Text="{Binding Jugador1puntos, StringFormat='X - {0}'}"  FontFamily="ka1" FontSize="28" TextColor="Green" HorizontalTextAlignment="Center" />
+            </Frame>
+            <Frame Grid.Column="1">
+                <Frame.Background>
+                    <LinearGradientBrush EndPoint="0,1">
+                        <GradientStop Color="#EDFB86"
+                          Offset="0.1" />
+                        <GradientStop Color="#9AFEB2"
+                          Offset="1.0" />
+                    </LinearGradientBrush>
+                </Frame.Background>
+                <Label Text="{Binding Jugador2puntos, StringFormat='X - {0}'}" FontFamily="ka1" FontSize="28" TextColor="Green" HorizontalTextAlignment="Center"  />
+            </Frame>
+        </Grid>
+        
+        <CollectionView ItemsSource="{Binding CatsList}">
+            <CollectionView.ItemsLayout>
+                <GridItemsLayout Span="3" Orientation="Vertical" VerticalItemSpacing="20"/>
+            </CollectionView.ItemsLayout>
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="models:CatModel">
+                    <Frame Padding="0" CornerRadius="20" HeightRequest="80" WidthRequest="80" >
+                        <Frame.Background>
+                            <LinearGradientBrush EndPoint="0,1">
+                                <GradientStop Color="#9AFEB2"
+                          Offset="0.1" />
+                                <GradientStop Color="#EDFB86"
+                          Offset="1.0" />
+                            </LinearGradientBrush>
+                        </Frame.Background>
+                        <Label Text="{Binding SelectedText}" FontSize="28" VerticalTextAlignment="Center" HorizontalTextAlignment="Center" TextColor="Green" BackgroundColor="Transparent" FontFamily="ka1"></Label>
+                        <Frame.GestureRecognizers>
+                            <TapGestureRecognizer  Command="{Binding Source={x:RelativeSource AncestorType={x:Type viewModels:CatGameViewModel}}, Path=SelectedItemCommand}"
+                                                  CommandParameter="{Binding .}"></TapGestureRecognizer>
+                        </Frame.GestureRecognizers>
+                    </Frame>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+        <Label Text="{Binding PlayerWinOrDrawText}" FontSize="25"  FontFamily="Sans Serif Shaded" HorizontalTextAlignment="Center" TextColor="Green" Margin="20"></Label>
+
+        <Button Text="Reiniciar Juego" HeightRequest="50" Command="{Binding ReinicarJuegoCommand}" FontFamily="Sans Serif Shaded" TextColor="#F24BB8" Background="#CCF294"></Button>
+    </VerticalStackLayout>
+</ContentPage>
