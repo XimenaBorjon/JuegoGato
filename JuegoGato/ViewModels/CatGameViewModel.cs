@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.AspNetCore.SignalR.Client;
+using JuegoGato.Services;
 
 namespace JuegoGato.ViewModels
 {
@@ -27,11 +28,12 @@ namespace JuegoGato.ViewModels
         [ObservableProperty]
         private int turnojugador = 0;
 
+        GatoServices services= new GatoServices();
 
         private bool noganadores;
 
         List<int[]> PosiblesGanadores = new List<int[]>();
-        public HubConnection connection = new HubConnectionBuilder().WithUrl("https://gato.sistemas19.com/gatohub").Build();
+        public HubConnection connection = new HubConnectionBuilder().WithUrl("https://localhost:44350/gatohub").Build();
 
         public ObservableCollection<CatModel> CatsList { get; set; } = new ObservableCollection<CatModel>();
         public CatGameViewModel()
