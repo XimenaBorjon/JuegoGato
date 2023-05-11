@@ -4,28 +4,48 @@
              x:Class="JuegoGato.Views.RegistroJugador"
             Title="RegistroJugador">
 
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition></RowDefinition>
-            <RowDefinition></RowDefinition>
-            <RowDefinition></RowDefinition>
-            <RowDefinition></RowDefinition>
-        </Grid.RowDefinitions>
-        
-        <Grid.Background>
+    <VerticalStackLayout>
+        <VerticalStackLayout.Background>
             <LinearGradientBrush EndPoint="1,0">
                 <GradientStop Color="#2AF498"
                           Offset="0.1" />
                 <GradientStop Color="#11C1D3"
                           Offset="1.0" />
             </LinearGradientBrush>
-        </Grid.Background>
+        </VerticalStackLayout.Background>
 
-        <Label Text="Registro Jugador" FontFamily="ka1" FontSize="38" Margin="10"  TextColor="Green" HorizontalTextAlignment="Center" Grid.Row="0" />
+        <Label Text="Registro Jugador" FontFamily="ka1" FontSize="38" Margin="0,30"  TextColor="#E2FDBA" HorizontalTextAlignment="Center"  />
+        <Image Source="perfil.png" WidthRequest="150" HeightRequest="150"></Image>
+        <Label Text="Nombre Jugador"  FontFamily="ka1" FontSize="25" Margin="0,50"  TextColor="#01A0FA" HorizontalTextAlignment="Center" VerticalTextAlignment="Center"></Label>
+        <Border Stroke="#01A0FA"
+        StrokeThickness="3"
+        StrokeShape="RoundRectangle 80,80,80,80"
+        Background="#2AF498"
+                 HeightRequest="50"
+                WidthRequest="350" Margin="0,-40">
+            <Entry FontFamily="ka1" FontSize="20"   TextColor="#01A0FA">
+            </Entry>
+        </Border>
 
-        <Label Text="Nombre Jugador"  FontFamily="ka1" FontSize="20" Margin="10"  TextColor="#01A0FA" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" Grid.Row="1"></Label>
-        <Entry FontFamily="ka1" FontSize="20"  TextColor="#01A0FA"  VerticalTextAlignment="Center" Grid.Row="2" Grid.RowSpan="1"></Entry>
-    </Grid>
+        <Border Stroke="#01A0FA"
+        StrokeThickness="3"
+        StrokeShape="RoundRectangle 80,80,80,80"
+        Background="#2AF498"
+                 HeightRequest="50"
+                WidthRequest="280" Margin="0,50">
+            <Button Text="Iniciar Sesion" FontFamily="ka1" FontSize="15" TextColor="Green" Background="#11C1D3"></Button>
+        </Border>
+
+        <Border Stroke="#01A0FA"
+        StrokeThickness="3"
+        StrokeShape="RoundRectangle 80,80,80,80"
+        Background="#2AF498"
+                 HeightRequest="50"
+                WidthRequest="280" Margin="0,-50">
+            <Button Text="Iniciar Juego" FontFamily="ka1" FontSize="15"   TextColor="Green" Background="#11C1D3"></Button>
+        </Border>
+
+    </VerticalStackLayout>
          
     
 </ContentPage>
