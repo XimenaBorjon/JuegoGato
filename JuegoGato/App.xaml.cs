@@ -1,14 +1,16 @@
-﻿using JuegoGato.Views;
+﻿using JuegoGato.ViewModels;
+using JuegoGato.Views;
 
 namespace JuegoGato;
 
 public partial class App : Application
 {
+	public static CatGameViewModel Viewmodel { get; set; } = new();
 	public App()
 	{
 		InitializeComponent();
-		App.Current.MainPage = new RegistroJugador();
-
+		Routing.RegisterRoute("//Juego", typeof(GatoView));
+		MainPage = new AppShell();
 
     }
 }

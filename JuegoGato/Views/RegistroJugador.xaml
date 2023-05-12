@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm ="clr-namespace:JuegoGato.ViewModels"
              x:Class="JuegoGato.Views.RegistroJugador"
-            Title="RegistroJugador">
+            Title="RegistroJugador" x:DataType="vm:CatGameViewModel">
 
     <VerticalStackLayout>
         <VerticalStackLayout.Background>
@@ -23,7 +24,7 @@
         Background="#2AF498"
                  HeightRequest="50"
                 WidthRequest="350" Margin="0,-40">
-            <Entry FontFamily="ka1" FontSize="20"   TextColor="#01A0FA">
+            <Entry x:Name="Nombre" FontFamily="ka1" FontSize="20" Text="{Binding jugadores.Nombre}" TextColor="#01A0FA">
             </Entry>
         </Border>
 
@@ -33,7 +34,17 @@
         Background="#2AF498"
                  HeightRequest="50"
                 WidthRequest="280" Margin="0,50">
-            <Button Text="Iniciar Sesion" FontFamily="ka1" FontSize="15" TextColor="Green" Background="#11C1D3"></Button>
+            <Button Text="Registrarse" FontFamily="ka1" FontSize="15" TextColor="Green" Command="{Binding RegistrarCommand}" Clicked="Button_Clicked" Background="#11C1D3"></Button>
+        </Border>
+
+
+        <Border Stroke="#01A0FA"
+        StrokeThickness="3"
+        StrokeShape="RoundRectangle 80,80,80,80"
+        Background="#2AF498"
+                 HeightRequest="50"
+                WidthRequest="280" Margin="0,50">
+            <Button Text="Iniciar Sesion" FontFamily="ka1" FontSize="15" TextColor="Green" Command="{Binding LoginCommand}" CommandParameter="{Binding Source={x:Reference Nombre}, Path=Text}" Background="#11C1D3"></Button>
         </Border>
 
         <Border Stroke="#01A0FA"
@@ -44,8 +55,5 @@
                 WidthRequest="280" Margin="0,-50">
             <Button Text="Iniciar Juego" FontFamily="ka1" FontSize="15"   TextColor="Green" Background="#11C1D3"></Button>
         </Border>
-
     </VerticalStackLayout>
-         
-    
 </ContentPage>

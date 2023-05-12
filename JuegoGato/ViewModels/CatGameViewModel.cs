@@ -28,21 +28,49 @@ namespace JuegoGato.ViewModels
         [ObservableProperty]
         private int turnojugador = 0;
 
-        GatoServices services= new GatoServices();
+        GatoServices services = new GatoServices();
 
         private bool noganadores;
+
+        public Command RegistrarCommand { get; set; }
+        public Command LoginCommand { get; set; }
 
         List<int[]> PosiblesGanadores = new List<int[]>();
         public HubConnection connection = new HubConnectionBuilder().WithUrl("https://localhost:44350/gatohub").Build();
 
         public ObservableCollection<CatModel> CatsList { get; set; } = new ObservableCollection<CatModel>();
+        public ObservableCollection<Jugador> ListJugador { get; set; } = new ObservableCollection<Jugador>();
+        public Jugador jugadores{get; set;} = new Jugador();
+
         public CatGameViewModel()
         {
+            RegistrarCommand = new Command(RegistrarJugador);
+            LoginCommand = new Command<string>(LoginJugador);
             SetUpGameInfo();
             connection.StartAsync();
             //llamar a los metodos
 
             RegisterMoveHandler();
+
+        }
+
+        public async void LoginJugador(string jugadore)
+        {
+            var datos = await services.GetByName(jugadore);
+            await Shell.Current.GoToAsync("//Juego");
+        }
+
+        public async void RegistrarJugador()
+        {
+            ListJugador.Add(jugadores);
+            var datos = await services.Insert(jugadores);
+            await App.Current.MainPage.DisplayAlert("Te has registrado exitosamente","Dar Click en Continuar", "Ok");
+
+        }
+
+        void Actualizar(string? property = null)
+        {
+            
         }
 
         public async Task ConnectToserver()

@@ -18,7 +18,7 @@
                           Offset="1.0" />
                     </LinearGradientBrush>
                 </Frame.Background>
-                <Label Text="{Binding Jugador1puntos, StringFormat='X - {0}'}"  FontFamily="ka1" FontSize="28" TextColor="Green" HorizontalTextAlignment="Center" />
+                <Label Text="{Binding Jugador1puntos, StringFormat='O - {0}'}"  FontFamily="ka1" FontSize="28" TextColor="Green" HorizontalTextAlignment="Center" />
             </Frame>
             <Frame Grid.Column="1">
                 <Frame.Background>

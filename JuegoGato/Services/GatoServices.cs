@@ -32,6 +32,23 @@ namespace JuegoGato.Services
             return jugadores;
         }
 
+        public async Task<Jugador> GetByName(string nombre)
+        {
+            Jugador j = new Jugador();
+            var result = await client.GetAsync("api/Gato/"+nombre);
+            if (result.IsSuccessStatusCode)
+            {
+                var json = await result.Content.ReadAsStringAsync();
+                j = JsonConvert.DeserializeObject<Jugador>(json);
+                return j;
+            }
+            else
+            {
+                return null;
+            }
+           
+        }
+
         public async Task<bool> Insert(Jugador j)
         {
             var json = JsonConvert.SerializeObject(j);
