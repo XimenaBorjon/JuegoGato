@@ -52,6 +52,7 @@
 	  <None Remove="Resources\Fonts\ka1.ttf" />
 	  <None Remove="Resources\Fonts\Sans Serif Shaded.ttf" />
 	  <None Remove="Resources\Images\perfil.png" />
+	  <None Remove="Resources\Images\puntuacion.png" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -67,6 +68,9 @@
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Views\RegistroJugador.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\ScoreView.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	</ItemGroup>

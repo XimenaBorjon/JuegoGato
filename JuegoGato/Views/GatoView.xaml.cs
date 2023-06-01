@@ -8,9 +8,9 @@ public partial class GatoView : ContentPage
 	public GatoView()
 	{
 		InitializeComponent();
-		this.BindingContext = new CatGameViewModel();
+		this.BindingContext = App.Viewmodel;
 	}
 
- 
+
 
 }

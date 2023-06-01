@@ -16,7 +16,7 @@ namespace JuegoGato.Services
         public GatoServices()
         {
             client = new HttpClient();
-            client.BaseAddress = new Uri("https://localhost:44350/");
+            client.BaseAddress = new Uri("https://gato.sistemas19.com/");
             
         }
 

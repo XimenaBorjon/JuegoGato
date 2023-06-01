@@ -44,7 +44,7 @@
         Background="#2AF498"
                  HeightRequest="50"
                 WidthRequest="280" Margin="0,50">
-            <Button Text="Iniciar Sesion" FontFamily="ka1" FontSize="15" TextColor="Green" Command="{Binding LoginCommand}" CommandParameter="{Binding Source={x:Reference Nombre}, Path=Text}" Background="#11C1D3"></Button>
+            <Button Text="Iniciar Juego" FontFamily="ka1" FontSize="15" TextColor="Green" Command="{Binding LoginCommand}" CommandParameter="{Binding Source={x:Reference Nombre}, Path=Text}" Background="#11C1D3"></Button>
         </Border>
 
         <Border Stroke="#01A0FA"
@@ -53,7 +53,7 @@
         Background="#2AF498"
                  HeightRequest="50"
                 WidthRequest="280" Margin="0,-50">
-            <Button Text="Iniciar Juego" FontFamily="ka1" FontSize="15"   TextColor="Green" Background="#11C1D3"></Button>
+            <Button Text="Puntuacion" FontFamily="ka1" FontSize="15" Command="{Binding VerSalasCommand}" TextColor="Green" Background="#11C1D3"></Button>
         </Border>
     </VerticalStackLayout>
 </ContentPage>

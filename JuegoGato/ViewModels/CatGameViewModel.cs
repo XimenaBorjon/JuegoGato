@@ -10,6 +10,7 @@ using System.Windows.Input;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.AspNetCore.SignalR.Client;
 using JuegoGato.Services;
+using Microsoft.Maui.Layouts;
 
 namespace JuegoGato.ViewModels
 {
@@ -31,12 +32,19 @@ namespace JuegoGato.ViewModels
         GatoServices services = new GatoServices();
 
         private bool noganadores;
+        private bool iniciado=false;
+
+        private byte playerTurn = 0;
+        private int turno = 0;
 
         public Command RegistrarCommand { get; set; }
         public Command LoginCommand { get; set; }
+        public Command IniciarCommand { get; set; }
+        public Command VerSalasCommand { get; set; }
 
+        Jugador myPlayer = new();
         List<int[]> PosiblesGanadores = new List<int[]>();
-        public HubConnection connection = new HubConnectionBuilder().WithUrl("https://localhost:44350/gatohub").Build();
+        public HubConnection connection = new HubConnectionBuilder().WithUrl("https://gato.sistemas19.com/gatohub").Build();
 
         public ObservableCollection<CatModel> CatsList { get; set; } = new ObservableCollection<CatModel>();
         public ObservableCollection<Jugador> ListJugador { get; set; } = new ObservableCollection<Jugador>();
@@ -46,31 +54,51 @@ namespace JuegoGato.ViewModels
         {
             RegistrarCommand = new Command(RegistrarJugador);
             LoginCommand = new Command<string>(LoginJugador);
+            IniciarCommand = new Command(Iniciar);
+            VerSalasCommand = new Command(VerScore);
             SetUpGameInfo();
             connection.StartAsync();
-            //llamar a los metodos
-
+            connection.On("SalaLlena", async () =>
+            {
+                await Shell.Current.DisplayAlert("Error al unirse", "La sala está llena", "OK");
+            });
+            connection.On("SetTurn", () =>
+            {
+                playerTurn = 2;
+            });
             RegisterMoveHandler();
 
         }
 
+        private void Iniciar()
+        {
+            
+        }
+
         public async void LoginJugador(string jugadore)
         {
-            var datos = await services.GetByName(jugadore);
-            await Shell.Current.GoToAsync("//Juego");
+            myPlayer = await services.GetByName(jugadore);
+
+            if (myPlayer != null)
+            {
+                //await connection.InvokeAsync("Join");
+                await Shell.Current.GoToAsync("//Juego");
+            }
+        }
+
+        public async void VerScore()
+        {
+            ListJugador.Clear();
+            var datos = await services.GetAll();
+            datos.ForEach(x=>ListJugador.Add(x));
+            await Shell.Current.GoToAsync("//Score");
         }
 
         public async void RegistrarJugador()
         {
             ListJugador.Add(jugadores);
-            var datos = await services.Insert(jugadores);
-            await App.Current.MainPage.DisplayAlert("Te has registrado exitosamente","Dar Click en Continuar", "Ok");
-
-        }
-
-        void Actualizar(string? property = null)
-        {
-            
+            await services.Insert(jugadores);
+            await App.Current.MainPage.DisplayAlert("Registrado", "Te has registrado exitosamente", "Ok");
         }
 
         public async Task ConnectToserver()
@@ -89,27 +117,38 @@ namespace JuegoGato.ViewModels
             {
                 await connection.StartAsync();
             }
-            await connection.InvokeAsync("SendMove", selectedItem.Index, selectedItem.SelectedText);
+            if (turno == 0)
+            {
+                playerTurn = 1;
+                await connection.InvokeAsync("SendFirstMove", selectedItem.Index, selectedItem.SelectedText, connection.ConnectionId);
+            }
+            else
+            {
+                await connection.InvokeAsync("SendMove", selectedItem.Index, selectedItem.SelectedText, playerTurn);
+            }
+            
         }
         //Movimiento del otro jugador "Recivir"
         private void RegisterMoveHandler()
         {
-            connection.On<int, string>("ReceiveMove", async (index, selectedText) =>
+            connection.On<int, string, byte>("ReceiveMove", (index, selectedText, turn) =>
              {
                 var selectedCat = CatsList.FirstOrDefault(cat => cat.Index == index);
                 if (selectedCat != null)
                 {
-                    selectedCat.SelectedText = selectedText;
+                     turno++;
+                     selectedCat.SelectedText = selectedText;
                     selectedCat.Player = turnojugador == 0 ? 1 : 0;
                     turnojugador = selectedCat.Player.Value;
-                    VerGanador();
+                    VerGanador(playerTurn, myPlayer);
 
                 }
             });
+
         }
 
 
-        private void SetUpGameInfo()
+        async Task SetUpGameInfo()
         {
             PosiblesGanadores.Clear();
 
@@ -138,40 +177,47 @@ namespace JuegoGato.ViewModels
         }
 
         [ICommand]
-        public void ReinicarJuego()
+        public async Task ReinicarJuego()
         {
+            playerTurn = 0;
+            turno = 0;
             noganadores = false;
             PlayerWinOrDrawText = "";
             turnojugador = 0;
-            SetUpGameInfo();
+            await SetUpGameInfo();
         }
 
 
         [ICommand]
         public async void SelectedItem(CatModel selectditem)
         {
-            if (!string.IsNullOrWhiteSpace(selectditem.SelectedText) || noganadores) return;
-            
+            if((turno%2==0 && playerTurn==1) || (turno % 2 != 0 && playerTurn == 2) ||(turno==0 && playerTurn==0))
+            { 
+                if (!string.IsNullOrWhiteSpace(selectditem.SelectedText) || noganadores) return;
 
-            if (turnojugador == 0)
-            {
-                selectditem.SelectedText = "X"; //Jugador 1
+
+                if (turnojugador == 0)
+                {
+                    selectditem.SelectedText = "X"; //Jugador 1
+                }
+                else
+                {
+                    selectditem.SelectedText = "O"; //Jugador 2
+                }
+                selectditem.Player = turnojugador;
+                await SendMoveToserver(selectditem);
             }
-            else
-            {
-                selectditem.SelectedText = "O"; //Jugador 2
-            }
-            selectditem.Player = turnojugador;
-            //turnojugador = turnojugador == 0 ? 1 : 0;
-            //VerGanador();
-            await SendMoveToserver(selectditem);
+            //if (turno == 0)
+            //{
+            //    await SendMoveToserver(selectditem);
+            //}
         }
 
-        private void VerGanador()
+        private async void VerGanador(byte turnn, Jugador a)
         {
             var player1IndexList = CatsList.Where(x => x.Player == 0).Select(x => x.Index).ToList();
             var player2IndexList = CatsList.Where(x => x.Player == 1).Select(x => x.Index).ToList();
-
+            byte ganador = 0;
             if (player1IndexList.Count > 2 || player2IndexList.Count > 2)
             {
                 foreach (var posiblesganadores in PosiblesGanadores)
@@ -190,11 +236,12 @@ namespace JuegoGato.ViewModels
                         {
                             Jugador1puntos++;
                             PlayerWinOrDrawText = "Jugador 1 Ganador";
+                            ganador = 1;
                             noganadores = true;
                             break;
                         }
                     }
-
+                    
                     foreach (var index in player2IndexList)
                     {
                         if (posiblesganadores.Contains(index))
@@ -205,16 +252,51 @@ namespace JuegoGato.ViewModels
                         {
                             Jugador2puntos++;
                             PlayerWinOrDrawText = "Jugador 2 Ganador";
+                            ganador = 2;
                             noganadores = true;
+                            
                             break;
                         }
                     }
-                }
 
+                }
+                if (ganador != 0)
+                {
+                    
+                    
+                        if (ganador != turnn)
+                        {
+                            if (playerTurn != 0)
+                            {
+                                await ReinicarJuego();
+                            MainThread.BeginInvokeOnMainThread(async () =>
+                            {
+                                await Shell.Current.DisplayAlert("Ganaste", "Jugador " + ganador + " Ganador", "OK");
+                            });
+                            await services.Update(myPlayer);
+
+                            }
+                        }
+                        else
+                        {
+                            if (playerTurn != 0)
+                            {
+                                await ReinicarJuego();
+                            MainThread.BeginInvokeOnMainThread(async () =>
+                            {
+                                await Shell.Current.DisplayAlert("Perdiste", "Jugador " + ganador + " Ganador", "OK");
+                            });
+                            }
+                        }
+                        MainThread.BeginInvokeOnMainThread(async () =>
+                        {
+                            await Shell.Current.GoToAsync("..");
+                        });
+                    }
             }
 
             if (CatsList.Count(f=>f.Player.HasValue) == 9 && !noganadores)
-            {
+            {   
                 PlayerWinOrDrawText = "Empate";
             }
         }

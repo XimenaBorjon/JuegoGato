@@ -10,7 +10,8 @@ public partial class App : Application
 	{
 		InitializeComponent();
 		Routing.RegisterRoute("//Juego", typeof(GatoView));
-		MainPage = new AppShell();
+        Routing.RegisterRoute("//Score", typeof(ScoreView));
+        MainPage = new AppShell();
 
     }
 }

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm ="clr-namespace:JuegoGato.ViewModels"
+             x:Class="JuegoGato.Views.ScoreView"
+             xmlns:m="clr-namespace:JuegoGato.Models"
+             Title="ScoreView"  x:DataType="vm:CatGameViewModel">
+    <VerticalStackLayout>
+        
+         <VerticalStackLayout.Background>
+            <LinearGradientBrush EndPoint="1,0">
+                <GradientStop Color="#81FFEF"
+                          Offset="0.1" />
+                <GradientStop Color="#96E3E4"
+                          Offset="0.3" />
+                <GradientStop Color="#C89ECA"
+                          Offset="0.6" />
+                <GradientStop Color="#EE6AB5"
+                          Offset="0.8" />
+            </LinearGradientBrush>
+        </VerticalStackLayout.Background>
+        <Image Source="puntuacion.png" HeightRequest="150"></Image>
+        <ListView ItemsSource="{Binding ListJugador}" Background="transparent">
+            <ListView.ItemTemplate>
+                <DataTemplate x:DataType="m:Jugador">
+                    <TextCell DetailColor="#C89ECA" Text="{Binding Nombre}" Detail="{Binding PartidasGanadas}"/>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+    </VerticalStackLayout>
+</ContentPage>
